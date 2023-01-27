@@ -1,0 +1,180 @@
+-----------------------------------------
+CATEGORYCODE         COSTPERDOWNLOAD
+-------------------- ---------------
+M004       Handel:Water Music
+C11                             1.79
+
+M005       Sense and Sensibility
+C13                              1.5
+
+M006       Beatles:Yesterday
+
+ CREATE TABLE "Music"
+  2  (musicid VARCHAR(10) NOT NULL PRIMARY KEY,
+  3  title VARCHAR(50) NOT NULL,
+  4  categoryCode VARCHAR(10) NOT NULL,
+  5  costPerDownload DECIMAL(5,2),
+  6  FOREIGN KEY (categoryCode) REFERENCES "Category"(categoryCode)
+  7  );
+
+
+
+CREATE TABLE test_01
+(userid VARCHAR(10) NOT NULL,
+musicid VARCHAR(20) NOT NULL,
+downloadDate Date,
+FOREIGN KEY (musicid) REFERENCES "Music"(musicid),
+FOREIGN KEY (userid) REFERENCES "User"(userid)
+);
+
+CREATE TABLE sales
+(OrderNo int,
+ProductNo int,
+Price decimal(8,4),
+Quantity int,
+Sales decimal(8,4),
+Qtrid int CHECK(Qtrid between 1 and 4),
+Monthid int CHECK(Monthid between 1 and 12),
+Yearid int,
+CONSTRAINT primary_sk PRIMARY KEY(OrderNo,ProductNo)
+);
+
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10107','2','95.7','30','2871','1','2','2003');
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10107','5','99.91','39','3896.49','1','2','2003');
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10121','5','81.35','34','2765.9','1','2','2003'); 
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10134','2','94.74','41','3884.34','3','7','2004'); 
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10134','5','100','27','3307.77','3','7','2004');
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10159','14','100','49','5205.27','4','10','2005');
+ INSERT INTO sales(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10168','1','96.66','36','3479.76','4','10','2006'); 
+ INSERT INTO sales_data(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10180','12','100','42','4695.6','4','11','2006');
+ INSERT INTO sales_data(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10180','9','86.13','29','2497.77','4','11','2006');
+ INSERT INTO sales_data(OrderNo,ProductNo,Price,Quantity,Sales,Qtrid,Monthid,Yearid)
+ VALUES('10180','9','86.13','29','2497.77','4','11','2006');
+
+
+
+INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+VALUES('keita77','M004',to_date('02-Aug-2019','dd-mon-yyyy'));
+
+
+ SELECT c.title,count(c.categoryCode) as No_Music_Downloads
+ FROM 
+ "Category" c,
+ "MusicDownload" d,
+ "Music" m
+ WHERE 
+ c.categoryCode=m.categoryCode and
+ d.musicid=m.musicid
+ group by c.title;
+ 
+ 
+ SELECT c.title
+ FROM 
+ "Category" c,
+ "MusicDownload" d,
+ "Music" m
+ WHERE 
+ c.categoryCode=m.categoryCode and
+ d.musicid=m.musicid
+ group by c.title
+	having count(c.categoryCode) > 1;
+
+ select productno,monthid,yearid,
+sum(quantity) as total_quantity
+from sales_Data
+group by productno,monthid,yearid;
+
+ CREATE TABLE "User"
+ (userid VARCHAR(10) NOT NULL PRIMARY KEY,
+ name VARCHAR(20) NOT NULL,
+ emailAddress VARCHAR(50)
+ );
+
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('kendj3','Kenderine,J','kendj3@hotmail.co.uk');
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('patel11','Patel,F','patel11@ntl.co.uk');
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('flak05','Flavel,K','flak05@freeserve.co.uk');
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('johnsj9','Johnson,J','johnsj9@msn.co.uk');
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('keita77','Keita,R','keita77@hotmail.co.uk');
+ INSERT INTO "User"(userid,name,emailAddress)
+ VALUES('simpb91','Simpson,B','Simpb91@tesco.co.uk');
+ COMMIT;
+
+ CREATE TABLE "Category"
+ (categoryCode VARCHAR(20) NOT NULL PRIMARY KEY,
+ title VARCHAR(20)
+ );
+ INSERT INTO "Category"(categoryCode,title)
+ VALUES('C11','Classics');
+ INSERT INTO "Category"(categoryCode,title)
+ VALUES('C12','Pop-Rock');
+ INSERT INTO "Category"(categoryCode,title)
+ VALUES('C13','Movie Soundtrack');
+ COMMIT;
+
+ CREATE TABLE "Music"
+ (musicid VARCHAR(10) NOT NULL PRIMARY KEY,
+ title VARCHAR(50) NOT NULL,
+ categoryCode VARCHAR(20) NOT NULL,
+ costPerDownload DECIMAL(5,2),
+ FOREIGN KEY (categoryCode) REFERENCES "Category"(categoryCode)
+ );
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M001','James Bond:Golden Eyes','C13','0.99');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M002','Lake House','C13','1.99');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M003','Dvorak:Symphony no 9','C11','1.49');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M004','Handel:Water Music','C11','1.79');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M005','Sense and Sensibility','C13','1.50');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ Values('M006','Beatles:Yesterday','C12','1.10');
+ INSERT INTO "Music"(musicid,title,categoryCode,costPerDownload)
+ VALUES('M007','Elton John:Your Song','C12','0.89');
+ COMMIT;
+
+ CREATE TABLE "MusicDownload"
+ (userid VARCHAR(10) NOT NULL,
+ musicid VARCHAR(20) NOT NULL,
+ downloadDate DATE,
+ FOREIGN KEY (musicid) REFERENCES "Music"(musicid),
+ FOREIGN KEY (userid) REFERENCES "User"(userid)
+ );
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('kendj3','M002',to_date('03-May-2018','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('johnsj9','M005',to_date('01-May-2019','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('patel11','M002',to_date('06-May-2018','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('johnsj9','M001',to_date('06-May-2019','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('kendj3','M003',to_date('01-Aug-2019','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('keita77','M004',to_date('02-Aug-2019','dd-mon-yyyy'));
+ INSERT INTO "MusicDownload"(userid,musicid,downloadDate)
+ VALUES('simpb91','M007',to_date('05-Sep-18','dd-mon-yyyy'));
+
+ SELECT COUNT(distinct userid) FROM "Music" m,
+ "MusicDownload" d,"Category" c
+ WHERE d.musicid=m.musicid and
+ m.categoryCode=c.categoryCode and
+ c.title='Pop-Rock';
+
+CONSTRAINT primary_sk PRIMARY KEY(OrderNo,ProductNo)
+
